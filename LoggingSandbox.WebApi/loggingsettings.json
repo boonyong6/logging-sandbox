@@ -1,0 +1,7 @@
+{
+  "LogLevel": {
+    "Default":  "Information",
+    "LoggingSandbox.WebApi.Controllers.WeatherForecastController": "Information",
+    "Microsoft.Hosting.Lifetime": "Trace"
+  }
+}
