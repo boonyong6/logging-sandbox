@@ -21,8 +21,17 @@ namespace LoggingSandbox.WebApi.Controllers
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
+            Recorder.Start();
             _logger.LogDebug("--> DEBUG");
+            Recorder.Stop();
+
+            Recorder.Start();
             _logger.LogInformation("--> INFO");
+            Recorder.Stop();
+
+            Recorder.Start();
+            _logger.LogWarning("-->WARNING");
+            Recorder.Stop();
 
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
