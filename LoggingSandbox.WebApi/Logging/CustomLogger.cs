@@ -27,16 +27,8 @@ public class CustomLogger : ILogger
     {
         LoggingOptions loggingOptions = _loggingService.GetLoggingOptions();
 
-        string defaultLogLevelText = loggingOptions.LogLevel.GetValueOrDefault(
-            LoggingOptions.DefaultLogLevelKey, LoggingOptions.DefaultLogLevelValue.ToString());
-        if (!Enum.TryParse(defaultLogLevelText, out LogLevel defaultLogLevel))
-        {
-            defaultLogLevel = LoggingOptions.DefaultLogLevelValue;
-        }
-
         LogLevel? configLogLevel = GetConfigLogLevelRecursively(loggingOptions, _categoryName);
-
-        LogLevel minimumLogLevel = configLogLevel ?? defaultLogLevel;
+        LogLevel minimumLogLevel = configLogLevel ?? GetDefaultLogLevel(loggingOptions);
 
         return entryLogLevel >= minimumLogLevel;
     }
@@ -51,7 +43,8 @@ public class CustomLogger : ILogger
         {
             if (!Enum.TryParse(configLogLevelText, out LogLevel configLogLevel))
             {
-                throw new InvalidCastException($"Failed to cast \"{configLogLevel}\" to `LogLevel`.");
+                WriteLine($"[WARN] Failed to parse \"{configLogLevelText}\" to `LogLevel` enum.");
+                return null;
             }
 
             return configLogLevel;
@@ -75,6 +68,18 @@ public class CustomLogger : ILogger
         }
 
         return namespaceText.Substring(0, lastDotIndex);
+    }
+
+    private static LogLevel GetDefaultLogLevel(LoggingOptions loggingOptions)
+    {
+        string defaultLogLevelText = loggingOptions.LogLevel.GetValueOrDefault(
+                    LoggingOptions.DefaultLogLevelKey, LoggingOptions.DefaultLogLevelValue.ToString());
+        if (!Enum.TryParse(defaultLogLevelText, out LogLevel defaultLogLevel))
+        {
+            defaultLogLevel = LoggingOptions.DefaultLogLevelValue;
+        }
+
+        return defaultLogLevel;
     }
 
     public void Log<TState>(LogLevel entryLogLevel, EventId eventId, TState state, 

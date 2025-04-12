@@ -28,7 +28,7 @@ public class CachedLoggingService : ICachedLoggingService
         }
 
         LoggingOptions loggingOptions = Cache.Set(
-            cacheKey, _innerService.GetLoggingOptions(), TimeSpan.FromSeconds(60));
+            cacheKey, _innerService.GetLoggingOptions(), TimeSpan.FromSeconds(10));
 
         return loggingOptions;
     }
